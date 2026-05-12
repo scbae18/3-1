@@ -1,6 +1,7 @@
 /**
  * 메뉴 목록 — 운영 시 이 배열만 수정하면 됩니다.
- * addonOnly: true → 메인·사이드·자릿세 등(주문서에서 안내 배지용).
+ * addonOnly: true → 메인·사이드 등(주문서에서 「첫 주문 후」 배지용).
+ * hideFirstOrderBadge: true → 해당 배지·강조 테두리 없음(예: 자릿세).
  */
 export const MENU_LIST = [
   /* 세트 */
@@ -18,5 +19,5 @@ export const MENU_LIST = [
   { id: 10, name: "계란찜", price: 5900, category: "사이드", addonOnly: true },
   { id: 11, name: "콘치즈", price: 5900, category: "사이드", addonOnly: true },
   /* 기타 */
-  { id: 12, name: "자릿세", price: 2900, category: "기타", addonOnly: true },
+  { id: 12, name: "자릿세", price: 2900, category: "기타", addonOnly: true, hideFirstOrderBadge: true },
 ];

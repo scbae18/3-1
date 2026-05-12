@@ -16,15 +16,15 @@ function formatElapsed(ms) {
  */
 export default function SystemPage() {
   const { socket, connected, state } = useAppSocket();
-  const [, tick] = useState(0);
+  const [clock, setClock] = useState(0);
 
   useEffect(() => {
-    const id = setInterval(() => tick((t) => t + 1), 1000);
+    const id = setInterval(() => setClock((c) => c + 1), 1000);
     return () => clearInterval(id);
   }, []);
 
   const defaultLimit = state?.settings?.defaultLimitMinutes ?? 90;
-  const extensionM = state?.settings?.extensionMinutes ?? 30;
+  const extensionM = state?.settings?.extensionMinutes ?? 60;
 
   const tables = useMemo(() => {
     const entries = Object.entries(state?.tables ?? {});
@@ -38,7 +38,7 @@ export default function SystemPage() {
       const over = start != null && elapsed >= limitMs;
       return { table, start, elapsed, over, limitMin, bonus };
     });
-  }, [state?.tables, defaultLimit, tick]);
+  }, [state?.tables, defaultLimit, clock]);
 
   const [defaultInput, setDefaultInput] = useState(String(defaultLimit));
   const [extensionInput, setExtensionInput] = useState(String(extensionM));

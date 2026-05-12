@@ -43,7 +43,7 @@ const state = {
     /** 경고까지 기본 허용 시간(분) */
     defaultLimitMinutes: 90,
     /** 「시간 연장」 한 번당 제한 시간에 더해지는 분(타이머는 그대로) */
-    extensionMinutes: 30,
+    extensionMinutes: 60,
   },
   /** 매출 집계: 「주문 완료」 접수 기준(인메모리, 서버 재시작 시 초기화) */
   salesStats: {
@@ -219,7 +219,7 @@ io.on("connection", (socket) => {
     const table = String(tableRaw).trim();
     if (!table || !state.tables[table]) return;
     const ts = state.tables[table];
-    const add = Math.max(1, Math.floor(Number(state.settings.extensionMinutes) || 30));
+    const add = Math.max(1, Math.floor(Number(state.settings.extensionMinutes) || 60));
     ts.bonusLimitMinutes = Math.max(0, Math.floor(Number(ts.bonusLimitMinutes) || 0)) + add;
     broadcastState();
   });
@@ -251,7 +251,7 @@ io.on("connection", (socket) => {
   });
 
   socket.on("system:setExtensionMinutes", (minutes) => {
-    state.settings.extensionMinutes = Math.max(1, Math.floor(Number(minutes) || 30));
+    state.settings.extensionMinutes = Math.max(1, Math.floor(Number(minutes) || 60));
     broadcastState();
   });
 });

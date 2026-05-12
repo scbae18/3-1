@@ -66,10 +66,12 @@ export default function OrderPage() {
           테이블 번호
           <input
             type="text"
-            inputMode="text"
-            placeholder="예: 5, 야외1, VIP"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            autoComplete="off"
+            placeholder="예: 5, 12"
             value={table}
-            onChange={(e) => setTable(e.target.value)}
+            onChange={(e) => setTable(e.target.value.replace(/\D/g, ""))}
             className="field-input wide"
           />
         </label>
@@ -87,7 +89,7 @@ export default function OrderPage() {
             <ul className="menu-list">
               {items.map((m) => {
                 const sold = soldSet.has(m.id);
-                const addonHint = m.addonOnly === true && !tableHasOrdered;
+                const addonHint = m.addonOnly === true && !tableHasOrdered && !m.hideFirstOrderBadge;
                 const q = Math.max(0, Math.floor(Number(quantities[m.id]) || 0));
                 return (
                   <li key={m.id} className={`menu-row ${sold ? "soldout" : ""} ${addonHint ? "addon-hint" : ""}`}>
