@@ -3,7 +3,7 @@
  * @typedef {{ id: number, name: string, price: number, category: string, addonOnly?: boolean, hideFirstOrderBadge?: boolean }} MenuItem
  * @typedef {{ menuId: number, name: string, price: number, qty: number, done?: boolean, lineKey?: string | null }} OrderLine
  * @typedef {{ id: string, table: string, items: OrderLine[], createdAt: number }} KitchenOrder
- * @typedef {{ timerStartedAt: number | null, bonusLimitMinutes?: number }} TableState
+ * @typedef {{ timerStartedAt: number | null, bonusLimitMinutes?: number, coverQty?: number }} TableState
  * @typedef {{ menuId: number, name: string, category: string, qty: number, revenue: number }} SalesMenuLine
  * @typedef {{
  *   menuLines: SalesMenuLine[],

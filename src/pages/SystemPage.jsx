@@ -6,9 +6,8 @@ function formatElapsed(ms) {
   const totalSec = Math.floor(ms / 1000);
   const h = Math.floor(totalSec / 3600);
   const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  if (h > 0) return `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
-  return `${m}:${String(s).padStart(2, "0")}`;
+  if (h > 0) return `${h}시간 ${m}분`;
+  return `${m}분`;
 }
 
 /**
@@ -32,11 +31,12 @@ export default function SystemPage() {
     return entries.map(([table, t]) => {
       const start = t.timerStartedAt;
       const bonus = Math.max(0, Math.floor(Number(t.bonusLimitMinutes) || 0));
+      const coverQty = Math.max(0, Math.floor(Number(t.coverQty) || 0));
       const limitMin = defaultLimit + bonus;
       const limitMs = limitMin * 60 * 1000;
       const elapsed = start != null ? now - start : 0;
       const over = start != null && elapsed >= limitMs;
-      return { table, start, elapsed, over, limitMin, bonus };
+      return { table, start, elapsed, over, limitMin, bonus, coverQty };
     });
   }, [state?.tables, defaultLimit, clock]);
 
@@ -140,10 +140,13 @@ export default function SystemPage() {
           <p className="muted">등록된 테이블이 없습니다. 주문서에서 주문이 들어오면 표시됩니다.</p>
         ) : (
           <ul className="table-timers">
-            {tables.map(({ table, elapsed, over, start, limitMin, bonus }) => (
+            {tables.map(({ table, elapsed, over, start, limitMin, bonus, coverQty }) => (
               <li key={table} className={`table-timer-row ${over ? "over" : ""} ${start == null ? "idle" : ""}`}>
                 <div className="timer-main">
                   <span className="table-name-lg">{table}</span>
+                  <span className="table-headcount muted" title="해당 테이블에 접수된 자릿세 수량 합">
+                    인원 {coverQty}명
+                  </span>
                   <span className="elapsed-lg">{start != null ? formatElapsed(elapsed) : "타이머 대기"}</span>
                   {start != null && (
                     <span className="limit-hint muted">

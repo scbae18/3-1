@@ -9,7 +9,7 @@ import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Server } from "socket.io";
-import { MENU_LIST } from "../shared/menu.js";
+import { MENU_LIST, COVER_MENU_ID } from "../shared/menu.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3002;
@@ -30,15 +30,15 @@ const io = new Server(server, {
 /** @typedef {{ menuId: number, name: string, price: number, qty: number, done?: boolean, lineKey?: string }} OrderLine */
 /** @typedef {{ id: string, table: string, items: OrderLine[], createdAt: number }} KitchenOrder */
 
-/** @type {{ timerStartedAt: number | null, bonusLimitMinutes: number }} */
-const defaultTableState = () => ({ timerStartedAt: null, bonusLimitMinutes: 0 });
+/** @type {{ timerStartedAt: number | null, bonusLimitMinutes: number, coverQty: number }} */
+const defaultTableState = () => ({ timerStartedAt: null, bonusLimitMinutes: 0, coverQty: 0 });
 
 /** 서버 단일 상태 */
 const state = {
   soldOutIds: new Set(),
   kitchenQueue: /** @type {KitchenOrder[]} */ ([]),
-  /** 테이블별: timerStartedAt 고정, bonusLimitMinutes는 「시간 연장」마다 extensionMinutes만큼 가산 */
-  tables: /** @type {Record<string, { timerStartedAt: number | null, bonusLimitMinutes: number }>} */ ({}),
+  /** 테이블별: timerStartedAt 고정, bonusLimitMinutes는 「시간 연장」마다 extensionMinutes만큼 가산, coverQty는 접수된 자릿세 수량 합 */
+  tables: /** @type {Record<string, { timerStartedAt: number | null, bonusLimitMinutes: number, coverQty: number }>} */ ({}),
   settings: {
     /** 경고까지 기본 허용 시간(분) */
     defaultLimitMinutes: 90,
@@ -80,6 +80,7 @@ function getSnapshot() {
           {
             timerStartedAt: v.timerStartedAt,
             bonusLimitMinutes: bonus,
+            coverQty: Math.max(0, Math.floor(Number(v.coverQty) || 0)),
           },
         ];
       })
@@ -137,18 +138,30 @@ function submitOrder(tableRaw, items) {
 
   recordSalesFromItems(items);
 
-  const order = {
-    id: randomId(),
-    table,
-    items: items.map((i) => ({ ...i, done: false, lineKey: randomId() })),
-    createdAt: Date.now(),
-  };
-  state.kitchenQueue.push(order);
-
   if (!state.tables[table]) {
     state.tables[table] = defaultTableState();
   }
   const ts = state.tables[table];
+
+  let coverAdded = 0;
+  for (const it of items) {
+    if (it.menuId === COVER_MENU_ID) coverAdded += it.qty;
+  }
+  if (coverAdded > 0) {
+    ts.coverQty = Math.max(0, Math.floor(Number(ts.coverQty) || 0)) + coverAdded;
+  }
+
+  const kitchenItems = items.filter((it) => it.menuId !== COVER_MENU_ID);
+  if (kitchenItems.length > 0) {
+    const order = {
+      id: randomId(),
+      table,
+      items: kitchenItems.map((i) => ({ ...i, done: false, lineKey: randomId() })),
+      createdAt: Date.now(),
+    };
+    state.kitchenQueue.push(order);
+  }
+
   if (ts.timerStartedAt == null) {
     ts.timerStartedAt = Date.now();
   }

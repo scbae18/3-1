@@ -193,6 +193,53 @@ select:focus {
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(2px);
+}
+
+.modal-panel {
+  width: 100%;
+  max-width: 22rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.25rem 1.35rem;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.45);
+}
+
+.modal-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
+.modal-body {
+  margin: 0 0 1.25rem;
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.modal-actions .btn-secondary,
+.modal-actions .btn-primary {
+  min-width: 6.5rem;
+}
+
 /* —— 주문서 —— */
 .order-top {
   display: flex;
@@ -693,6 +740,12 @@ select:focus {
 .table-name-lg {
   font-size: clamp(1.5rem, 5vw, 2.25rem);
   font-weight: 800;
+}
+
+.table-headcount {
+  font-size: clamp(0.95rem, 2.8vw, 1.1rem);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 .elapsed-lg {

@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useAppSocket } from "../context/SocketContext.jsx";
 
 /**
@@ -9,6 +9,7 @@ export default function OrderPage() {
   const [table, setTable] = useState("");
   /** menuId -> 수량 */
   const [quantities, setQuantities] = useState({});
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const soldSet = useMemo(() => new Set(state?.soldOutIds ?? []), [state?.soldOutIds]);
 
@@ -42,9 +43,21 @@ export default function OrderPage() {
       if (res?.ok) {
         setQuantities({});
         setTable("");
+        setPaymentModalOpen(false);
       }
     });
   }, [socket, table, quantities]);
+
+  useEffect(() => {
+    if (!paymentModalOpen) return;
+    const onKey = (e) => {
+      if (e.key === "Escape") setPaymentModalOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [paymentModalOpen]);
+
+  const canSubmit = connected && lines.length > 0 && table.trim().length > 0;
 
   const byCategory = useMemo(() => {
     const map = new Map();
@@ -61,6 +74,34 @@ export default function OrderPage() {
   return (
     <div className="page order-page">
       {toast && <div className="toast">{toast}</div>}
+      {paymentModalOpen && (
+        <div
+          className="modal-backdrop"
+          role="presentation"
+          onClick={() => setPaymentModalOpen(false)}
+        >
+          <div
+            className="modal-panel"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="pay-modal-title"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h2 id="pay-modal-title" className="modal-title">
+              입금 확인
+            </h2>
+            <p className="modal-body">입금 확인했나요?</p>
+            <div className="modal-actions">
+              <button type="button" className="btn-secondary" onClick={() => setPaymentModalOpen(false)}>
+                취소
+              </button>
+              <button type="button" className="btn-primary" onClick={submit}>
+                주문 완료
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="order-top">
         <label className="field-label">
           테이블 번호
@@ -134,7 +175,12 @@ export default function OrderPage() {
             합계 <strong>{total.toLocaleString()}원</strong>
           </div>
         </div>
-        <button type="button" className="btn-primary btn-block" onClick={submit} disabled={!connected}>
+        <button
+          type="button"
+          className="btn-primary btn-block"
+          onClick={() => setPaymentModalOpen(true)}
+          disabled={!canSubmit}
+        >
           주문 완료
         </button>
       </footer>
