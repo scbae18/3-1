@@ -166,8 +166,87 @@ select:focus {
   line-height: 1.4;
 }
 
-.menu-hint strong {
+.order-policy {
+  margin: 0 0 1.15rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.order-policy__heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 700;
   color: var(--text);
+}
+
+.order-policy__heading:not(:first-child) {
+  margin-top: 1rem;
+}
+
+.order-policy-table-wrap {
+  overflow-x: auto;
+  margin-bottom: 0.15rem;
+}
+
+.order-policy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.86rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.order-policy-table th,
+.order-policy-table td {
+  padding: 0.45rem 0.65rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+
+.order-policy-table thead th {
+  background: rgba(61, 156, 245, 0.12);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.order-policy-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.order-policy-dl {
+  margin: 0;
+}
+
+.order-policy-dl dt {
+  margin: 0.65rem 0 0.2rem;
+  font-weight: 600;
+  color: var(--text);
+  font-size: 0.9rem;
+}
+
+.order-policy-dl dt:first-child {
+  margin-top: 0;
+}
+
+.order-policy-dl dd {
+  margin: 0;
+  padding: 0;
+}
+
+.order-policy-ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+
+.order-policy-ul li {
+  margin: 0.25rem 0;
+}
+
+.order-policy-note {
+  margin: 0.75rem 0 0;
+  font-size: 0.88rem;
 }
 
 .section-title {
@@ -688,6 +767,36 @@ select:focus {
 
 .limit-hint {
   font-size: clamp(0.85rem, 2.4vw, 1rem);
+  width: 100%;
+}
+
+.tables-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.tables-section-title {
+  margin: 0;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.tables-search-label {
+  flex: 1 1 10rem;
+  max-width: 16rem;
+  margin: 0;
+  width: 100%;
+}
+
+.tables-search-caption {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
+.tables-search-input {
   width: 100%;
 }
 

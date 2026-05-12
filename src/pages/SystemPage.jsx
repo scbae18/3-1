@@ -28,7 +28,7 @@ export default function SystemPage() {
   const tables = useMemo(() => {
     const entries = Object.entries(state?.tables ?? {});
     const now = Date.now();
-    return entries.map(([table, t]) => {
+    const rows = entries.map(([table, t]) => {
       const start = t.timerStartedAt;
       const bonus = Math.max(0, Math.floor(Number(t.bonusLimitMinutes) || 0));
       const coverQty = Math.max(0, Math.floor(Number(t.coverQty) || 0));
@@ -36,12 +36,26 @@ export default function SystemPage() {
       const limitMs = limitMin * 60 * 1000;
       const elapsed = start != null ? now - start : 0;
       const over = start != null && elapsed >= limitMs;
-      return { table, start, elapsed, over, limitMin, bonus, coverQty };
+      /** 남은 시간(ms). 초과 시 음수, 타이머 미시작은 맨 아래로 */
+      const remainingMs = start != null ? limitMs - elapsed : Number.POSITIVE_INFINITY;
+      return { table, start, elapsed, over, limitMin, bonus, coverQty, remainingMs };
     });
+    rows.sort((a, b) => {
+      if (a.remainingMs !== b.remainingMs) return a.remainingMs - b.remainingMs;
+      return String(a.table).localeCompare(String(b.table), "ko");
+    });
+    return rows;
   }, [state?.tables, defaultLimit, clock]);
 
   const [defaultInput, setDefaultInput] = useState(String(defaultLimit));
   const [extensionInput, setExtensionInput] = useState(String(extensionM));
+  const [tableSearch, setTableSearch] = useState("");
+
+  const filteredTables = useMemo(() => {
+    const q = tableSearch.trim().toLowerCase();
+    if (!q) return tables;
+    return tables.filter((row) => String(row.table).toLowerCase().includes(q));
+  }, [tables, tableSearch]);
 
   useEffect(() => {
     if (state?.settings?.defaultLimitMinutes != null) {
@@ -135,19 +149,35 @@ export default function SystemPage() {
       </section>
 
       <section className="tables-section">
-        <h2 className="section-title large">사용 중 테이블</h2>
+        <div className="tables-section-head">
+          <h2 className="section-title large tables-section-title">사용 중 테이블</h2>
+          <label className="field-label tables-search-label">
+            <span className="tables-search-caption">테이블 검색</span>
+            <input
+              type="search"
+              inputMode="search"
+              autoComplete="off"
+              placeholder="번호 입력"
+              value={tableSearch}
+              onChange={(e) => setTableSearch(e.target.value)}
+              className="field-input tables-search-input"
+            />
+          </label>
+        </div>
         {tables.length === 0 ? (
           <p className="muted">등록된 테이블이 없습니다. 주문서에서 주문이 들어오면 표시됩니다.</p>
+        ) : filteredTables.length === 0 ? (
+          <p className="muted">「{tableSearch.trim()}」에 해당하는 테이블이 없습니다.</p>
         ) : (
           <ul className="table-timers">
-            {tables.map(({ table, elapsed, over, start, limitMin, bonus, coverQty }) => (
+            {filteredTables.map(({ table, elapsed, over, start, limitMin, bonus, coverQty }) => (
               <li key={table} className={`table-timer-row ${over ? "over" : ""} ${start == null ? "idle" : ""}`}>
                 <div className="timer-main">
                   <span className="table-name-lg">{table}</span>
+                  <span className="elapsed-lg">{start != null ? formatElapsed(elapsed) : "타이머 대기"}</span>
                   <span className="table-headcount muted" title="해당 테이블에 접수된 자릿세 수량 합">
                     인원 {coverQty}명
                   </span>
-                  <span className="elapsed-lg">{start != null ? formatElapsed(elapsed) : "타이머 대기"}</span>
                   {start != null && (
                     <span className="limit-hint muted">
                       허용 {limitMin}분

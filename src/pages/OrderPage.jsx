@@ -121,9 +121,52 @@ export default function OrderPage() {
 
       <section className="menu-section">
         <h2 className="section-title">메뉴</h2>
-        <p className="muted menu-hint">
-          <strong>첫 주문은 세트를 권장</strong>합니다. 메인·사이드·자릿세는 원칙적으로 첫 주문 이후 추가 메뉴로 쓰기 좋습니다. 테이블 번호를 맞춰 주세요.
-        </p>
+        <div className="order-policy">
+          <h3 className="order-policy__heading">3. 인원별 필수 주문 기준</h3>
+          <div className="order-policy-table-wrap">
+            <table className="order-policy-table">
+              <thead>
+                <tr>
+                  <th scope="col">인원</th>
+                  <th scope="col">필수 세트 주문 수</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>1~2인</td>
+                  <td>세트 1개</td>
+                </tr>
+                <tr>
+                  <td>3~4인</td>
+                  <td>세트 2개</td>
+                </tr>
+                <tr>
+                  <td>5~6인</td>
+                  <td>세트 3개</td>
+                </tr>
+                <tr>
+                  <td>7~8인</td>
+                  <td>세트 4개</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h3 className="order-policy__heading">4. 주점 정책</h3>
+          <dl className="order-policy-dl">
+            <dt>기본 이용 시간</dt>
+            <dd>팀당 최대 1시간 반</dd>
+            <dt>시간 연장 정책</dt>
+            <dd>
+              <ul className="order-policy-ul">
+                <li>기본 1시간 반 이후 추가 주문 시 1시간 연장 가능</li>
+                <li>연장 조건 : 세트메뉴 1개 추가 주문</li>
+                <li>추가 연장 시 동일 조건 반복 적용</li>
+              </ul>
+            </dd>
+          </dl>
+          <p className="order-policy-note muted">추가 메뉴는 세트 메뉴 주문 이후 주문 가능</p>
+        </div>
         {byCategory.map(([cat, items]) => (
           <div key={cat} className="category-block">
             <h3 className="category-title">{cat}</h3>
