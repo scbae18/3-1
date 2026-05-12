@@ -79,7 +79,7 @@ export default function OrderPage() {
       <section className="menu-section">
         <h2 className="section-title">메뉴</h2>
         <p className="muted menu-hint">
-          메인·사이드·자릿세는 해당 테이블에 <strong>첫 주문이 들어간 뒤</strong>에만 담을 수 있습니다. 테이블 번호를 맞춰 주세요.
+          <strong>첫 주문은 세트를 권장</strong>합니다. 메인·사이드·자릿세는 원칙적으로 첫 주문 이후 추가 메뉴로 쓰기 좋습니다. 테이블 번호를 맞춰 주세요.
         </p>
         {byCategory.map(([cat, items]) => (
           <div key={cat} className="category-block">
@@ -87,23 +87,22 @@ export default function OrderPage() {
             <ul className="menu-list">
               {items.map((m) => {
                 const sold = soldSet.has(m.id);
-                const addonLocked = m.addonOnly === true && !tableHasOrdered;
-                const disabled = sold || addonLocked;
+                const addonHint = m.addonOnly === true && !tableHasOrdered;
                 const q = Math.max(0, Math.floor(Number(quantities[m.id]) || 0));
                 return (
-                  <li key={m.id} className={`menu-row ${sold ? "soldout" : ""} ${addonLocked ? "addon-locked" : ""}`}>
+                  <li key={m.id} className={`menu-row ${sold ? "soldout" : ""} ${addonHint ? "addon-hint" : ""}`}>
                     <div className="menu-info">
                       <span className="menu-name">{m.name}</span>
                       <span className="menu-price">{m.price.toLocaleString()}원</span>
                       {sold && <span className="badge-sold">주문 불가</span>}
-                      {addonLocked && !sold && <span className="badge-addon">첫 주문 후</span>}
+                      {addonHint && !sold && <span className="badge-addon">첫 주문 후</span>}
                     </div>
                     <div className="qty-controls">
-                      <button type="button" disabled={disabled} onClick={() => setQty(m.id, -1)} aria-label="감소">
+                      <button type="button" disabled={sold} onClick={() => setQty(m.id, -1)} aria-label="감소">
                         −
                       </button>
                       <span className="qty-val">{q}</span>
-                      <button type="button" disabled={disabled} onClick={() => setQty(m.id, 1)} aria-label="증가">
+                      <button type="button" disabled={sold} onClick={() => setQty(m.id, 1)} aria-label="증가">
                         +
                       </button>
                     </div>

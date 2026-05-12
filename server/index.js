@@ -135,21 +135,6 @@ function submitOrder(tableRaw, items) {
     }
   }
 
-  /** 해당 테이블에 아직 주문이 없으면, 세트 등 비-addon만으로 첫 주문해야 함 */
-  const isFirstOrderForTable = !state.tables[table];
-  if (isFirstOrderForTable && items.length > 0) {
-    const allAddonOnly = items.every((it) => {
-      const m = MENU_LIST.find((x) => x.id === it.menuId);
-      return m && m.addonOnly === true;
-    });
-    if (allAddonOnly) {
-      return {
-        ok: false,
-        error: "첫 주문은 세트를 포함해 주세요. 메인·사이드·자릿세는 첫 주문 이후 추가 주문만 가능합니다.",
-      };
-    }
-  }
-
   recordSalesFromItems(items);
 
   const order = {
@@ -294,11 +279,20 @@ server.on("error", (err) => {
   process.exit(1);
 });
 
-server.listen(PORT, () => {
+const listenHost = process.env.LISTEN_HOST ?? "0.0.0.0";
+
+server.listen(PORT, listenHost, () => {
   // eslint-disable-next-line no-console
-  console.log(
-    hasDist
-      ? `[server] http://127.0.0.1:${PORT} (웹 + Socket.io 동일 포트)`
-      : `[server] Socket.io http://127.0.0.1:${PORT} — 프론트는 Vite(5173)에서 실행하세요.`
-  );
+  if (hasDist) {
+    console.log(
+      `[server] 웹 + Socket.io 포트 ${PORT} (바인딩: ${listenHost})\n` +
+        `  • 이 머신 안에서만 볼 때: http://127.0.0.1:${PORT}\n` +
+        `  • EC2/클라우드에서는 브라우저에 퍼블릭 IP(또는 도메인)로 접속: http://<퍼블릭IP>:${PORT}\n` +
+        `    (127.0.0.1은 "내 PC"라서 다른 기기에서는 동작하지 않습니다.)`
+    );
+  } else {
+    console.log(
+      `[server] Socket.io http://127.0.0.1:${PORT} — 프론트는 Vite(5173)에서 실행하세요.`
+    );
+  }
 });

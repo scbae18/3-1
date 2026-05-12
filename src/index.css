@@ -264,9 +264,8 @@ select:focus {
   border-color: #5c3d3d;
 }
 
-.menu-row.addon-locked {
-  opacity: 0.85;
-  border-color: #3d4a5c;
+.menu-row.addon-hint {
+  border-color: rgba(61, 156, 245, 0.35);
 }
 
 .badge-addon {
