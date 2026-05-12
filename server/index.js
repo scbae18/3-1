@@ -9,7 +9,7 @@ import http from "http";
 import path from "path";
 import { fileURLToPath } from "url";
 import { Server } from "socket.io";
-import { MENU_LIST, COVER_MENU_ID } from "../shared/menu.js";
+import { MENU_LIST, COVER_MENU_ID, expandKitchenLines } from "../shared/menu.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PORT = Number(process.env.PORT) || 3002;
@@ -153,10 +153,11 @@ function submitOrder(tableRaw, items) {
 
   const kitchenItems = items.filter((it) => it.menuId !== COVER_MENU_ID);
   if (kitchenItems.length > 0) {
+    const flatLines = expandKitchenLines(kitchenItems);
     const order = {
       id: randomId(),
       table,
-      items: kitchenItems.map((i) => ({ ...i, done: false, lineKey: randomId() })),
+      items: flatLines.map((i) => ({ ...i, done: false, lineKey: randomId() })),
       createdAt: Date.now(),
     };
     state.kitchenQueue.push(order);

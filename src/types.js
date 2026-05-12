@@ -1,6 +1,6 @@
 /**
  * JSDoc 타입 정의 (런타임 import 없음)
- * @typedef {{ id: number, name: string, price: number, category: string, addonOnly?: boolean, hideFirstOrderBadge?: boolean }} MenuItem
+ * @typedef {{ id: number, name: string, price: number, category: string, addonOnly?: boolean, hideFirstOrderBadge?: boolean, kitchenParts?: string[] }} MenuItem
  * @typedef {{ menuId: number, name: string, price: number, qty: number, done?: boolean, lineKey?: string | null }} OrderLine
  * @typedef {{ id: string, table: string, items: OrderLine[], createdAt: number }} KitchenOrder
  * @typedef {{ timerStartedAt: number | null, bonusLimitMinutes?: number, coverQty?: number }} TableState
