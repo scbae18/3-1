@@ -123,29 +123,9 @@ export default function SystemPage() {
           </label>
         </div>
         <p className="muted small">
-          추가 주문으로 타이머는 자동으로 바뀌지 않습니다. 연장·초기화는 모두 이 화면에서 수동으로 하세요.
+          추가 주문으로 타이머는 자동으로 바뀌지 않습니다. 테이블별 연장·초기화는 아래에서 하세요. 매장 전체 데이터를 비우려면 상단 메뉴의
+          「전체 초기화」 화면을 이용하세요.
         </p>
-        <div className="system-reset-all">
-          <h3 className="section-title">전체 초기화</h3>
-          <p className="muted small flush">
-            주방 대기 주문, 모든 테이블 타이머, 매출 집계, 품절 표시를 한 번에 지웁니다. 위의 기본·연장 시간 설정은 그대로입니다.
-          </p>
-          <button
-            type="button"
-            className="btn-danger"
-            onClick={() => {
-              if (
-                window.confirm(
-                  "정말 전체 초기화할까요? 주방·테이블·매출·품절 내역이 모두 사라지며 되돌릴 수 없습니다."
-                )
-              ) {
-                socket.emit("system:resetAll");
-              }
-            }}
-          >
-            전체 초기화
-          </button>
-        </div>
       </section>
 
       <section className="tables-section">

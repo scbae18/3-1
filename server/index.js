@@ -53,6 +53,7 @@ const state = {
     /** 주문 완료 버튼이 성공한 횟수 */
     orderSubmitCount: 0,
   },
+  reservations: /** @type {{ id: string, name: string, partySize: number, phone: string, createdAt: number }[]} */ ([]),
 };
 
 function randomId() {
@@ -100,6 +101,7 @@ function getSnapshot() {
       totalRevenue: state.salesStats.totalRevenue,
       orderSubmitCount: state.salesStats.orderSubmitCount,
     },
+    reservations: state.reservations.map((r) => ({ ...r })),
   };
 }
 
@@ -256,6 +258,7 @@ io.on("connection", (socket) => {
       totalRevenue: 0,
       orderSubmitCount: 0,
     };
+    state.reservations = [];
     broadcastState();
   });
 
@@ -267,6 +270,39 @@ io.on("connection", (socket) => {
   socket.on("system:setExtensionMinutes", (minutes) => {
     state.settings.extensionMinutes = Math.max(1, Math.floor(Number(minutes) || 60));
     broadcastState();
+  });
+
+  socket.on("reservation:create", (payload, ack) => {
+    const name = String(payload?.name ?? "").trim();
+    const phone = String(payload?.phone ?? "").trim();
+    const partySize = Math.max(0, Math.floor(Number(payload?.partySize) || 0));
+    const fail = (error) => {
+      if (typeof ack === "function") ack({ ok: false, error });
+    };
+    if (!name) return fail("이름을 입력해 주세요.");
+    if (name.length > 40) return fail("이름은 40자 이내로 입력해 주세요.");
+    if (!phone) return fail("전화번호를 입력해 주세요.");
+    if (phone.length > 30) return fail("전화번호가 너무 깁니다.");
+    if (partySize < 1 || partySize > 99) return fail("인원수는 1~99명으로 입력해 주세요.");
+    state.reservations.push({
+      id: randomId(),
+      name,
+      phone,
+      partySize,
+      createdAt: Date.now(),
+    });
+    broadcastState();
+    if (typeof ack === "function") ack({ ok: true });
+  });
+
+  socket.on("reservation:delete", (id) => {
+    const rid = String(id ?? "").trim();
+    if (!rid) return;
+    const idx = state.reservations.findIndex((r) => r.id === rid);
+    if (idx >= 0) {
+      state.reservations.splice(idx, 1);
+      broadcastState();
+    }
   });
 });
 

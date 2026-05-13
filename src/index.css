@@ -117,6 +117,19 @@ select:focus {
   color: #fff;
 }
 
+.nav-a.nav-a--reset:not(.active) {
+  color: #f98888;
+}
+
+.nav-a.nav-a--reset:hover:not(.active) {
+  color: #fecaca;
+}
+
+.nav-a.nav-a--reset.active {
+  background: rgba(239, 68, 68, 0.38);
+  color: #fff;
+}
+
 .app-main {
   flex: 1;
   padding: 1rem;
@@ -226,8 +239,13 @@ select:focus {
 }
 
 .modal-actions .btn-secondary,
-.modal-actions .btn-primary {
+.modal-actions .btn-primary,
+.modal-actions .btn-danger {
   min-width: 6.5rem;
+}
+
+.modal-panel--danger {
+  border-color: rgba(239, 68, 68, 0.45);
 }
 
 /* —— 주문서 —— */
@@ -662,16 +680,6 @@ select:focus {
   }
 }
 
-.system-reset-all {
-  margin-top: 1.25rem;
-  padding-top: 1.25rem;
-  border-top: 1px solid var(--border);
-}
-
-.system-reset-all .btn-danger {
-  margin-top: 0.65rem;
-}
-
 .muted.small.flush {
   margin: 0 0 0.35rem;
 }
@@ -894,4 +902,179 @@ select:focus {
 
 .stats-row-zero {
   opacity: 0.45;
+}
+
+/* —— 전체 초기화 (/reset) —— */
+.reset-all-page {
+  max-width: 34rem;
+}
+
+.reset-all-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.reset-all-h1 {
+  margin: 0;
+  font-size: clamp(1.45rem, 5vw, 2rem);
+  font-weight: 800;
+}
+
+.reset-all-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1.15rem 1.25rem;
+}
+
+.reset-all-lead {
+  margin: 0 0 0.65rem;
+  line-height: 1.5;
+  font-size: 0.95rem;
+}
+
+.reset-all-note {
+  margin: 0 0 1.15rem;
+  font-size: 0.88rem;
+  line-height: 1.45;
+}
+
+.reset-all-trigger {
+  margin-top: 0.25rem;
+}
+
+/* —— 손님 예약 (/reserve, 헤더 없음) —— */
+.reserve-page {
+  flex: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.25rem 1rem 2rem;
+  min-height: 0;
+}
+
+.reserve-shell {
+  width: 100%;
+  max-width: 22rem;
+}
+
+.reserve-title {
+  margin: 0 0 0.35rem;
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 800;
+}
+
+.reserve-lead {
+  margin: 0 0 1.25rem;
+  font-size: 0.95rem;
+}
+
+.reserve-warn {
+  color: var(--muted);
+  margin: 0 0 1rem;
+  font-size: 0.9rem;
+}
+
+.reserve-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.reserve-error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.9rem;
+}
+
+.reserve-done {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.reserve-done-msg {
+  margin: 0;
+  color: var(--success);
+  font-weight: 600;
+  font-size: 1.05rem;
+}
+
+/* —— 운영 예약 목록 —— */
+.reservations-page {
+  max-width: 720px;
+}
+
+.reservations-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.reservations-h1 {
+  margin: 0;
+  font-size: clamp(1.5rem, 5vw, 2.1rem);
+}
+
+.reservations-hint {
+  margin: 0 0 1.25rem;
+  font-size: 0.88rem;
+}
+
+.reservation-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reservation-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem 1.1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.reservation-main {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.reservation-name {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.reservation-meta {
+  font-size: 0.95rem;
+}
+
+.reservation-time {
+  font-size: 0.85rem;
+}
+
+.reservation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+a.reservation-call {
+  text-decoration: none;
+  text-align: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
