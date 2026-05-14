@@ -1,7 +1,9 @@
 /**
  * Supabase(Postgres) 영속화 — SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY 없으면 동작 안 함(인메모리만).
+ * Node.js 20 등: Realtime용 내장 WebSocket이 없어 `ws`를 transport로 넘깁니다 (22+는 선택).
  */
 import { createClient } from "@supabase/supabase-js";
+import ws from "ws";
 
 /** @type {import("@supabase/supabase-js").SupabaseClient | null | undefined} */
 let _client;
@@ -10,7 +12,12 @@ function getClient() {
   if (_client !== undefined) return _client;
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  _client = url && key ? createClient(url, key, { auth: { persistSession: false } }) : null;
+  _client = url && key
+    ? createClient(url, key, {
+        auth: { persistSession: false },
+        realtime: { transport: ws },
+      })
+    : null;
   return _client;
 }
 
