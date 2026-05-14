@@ -116,7 +116,7 @@ export default function ReservePage() {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 autoComplete="tel"
-                placeholder="010-0000-0000"
+                placeholder="01000000000"
               />
             </label>
             {error && <p className="reserve-error">{error}</p>}
